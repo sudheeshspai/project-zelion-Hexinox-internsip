@@ -1,38 +1,159 @@
-.App {
-  text-align: center;
+* {
+ margin: 0;
+ padding: 0;
+ box-sizing: border-box;
+ scroll-behavior: smooth;
 }
 
-.App-logo {
-  height: 40vmin;
-  pointer-events: none;
+/* Dark background and font */
+body {
+ font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ background: #000000;
+ color: #ffffff;
+ overflow-x: hidden;
 }
 
-@media (prefers-reduced-motion: no-preference) {
-  .App-logo {
-    animation: App-logo-spin infinite 20s linear;
-  }
+/* Home Section Specific */
+.home-section {
+ height: 100vh;
+ display: flex;
+ justify-content: center;
+ align-items: center;
+ background: transparent;
 }
 
-.App-header {
-  background-color: #282c34;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  font-size: calc(10px + 2vmin);
-  color: white;
+.home-logo {
+ width: 200px;
+ transition: transform 0.3s ease;
+ margin-top: 50px;
+ z-index: 900;
 }
 
-.App-link {
-  color: #61dafb;
+
+/* Sections styling */
+section {
+ height: 100vh;
+ padding: 100px 40px;
+ display: flex;
+ flex-direction: column;
+ align-items: center;
+ justify-content: center;
+ text-align: center;
 }
 
-@keyframes App-logo-spin {
-  from {
-    transform: rotate(0deg);
-  }
-  to {
-    transform: rotate(360deg);
-  }
+section h2 {
+ font-size: 2.5rem;
+ margin-bottom: 20px;
+}
+
+section p {
+ font-size: 1.2rem;
+ max-width: 600px;
+ opacity: 0.8;
+}
+
+/* Navbar Glassmorphism */
+.navbar {
+ position: fixed;
+ top: 20px;
+ left: 50%;
+ transform: translateX(-50%);
+ width: 90%;
+ max-width: 1500px;
+ background: rgba(117, 60, 60, 0.05);
+ backdrop-filter: blur(15px);
+ border-radius: 15px;
+ display: flex;
+ justify-content: space-between;
+ align-items: center;
+ padding: 15px 30px;
+ z-index: 1000;
+ border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+/* Navbar logo */
+.navbar img {
+ height: 40px;
+}
+
+.contact-btn {
+ padding: 8px 16px;
+ background-color: #e9e9e9;
+ color: #000000;
+ border-radius: 40px;
+ font-weight: 600;
+ transition: background 0.3s, color 0.3s;
+}
+
+.contact-btn:hover {
+ background-color: #2684ff;
+ color: #fff;
+}
+
+/* Navbar links */
+.navbar a {
+ color: white;
+ margin-left: 20px;
+ text-decoration: none;
+ font-weight: 500;
+ transition: color 0.3s;
+}
+
+.navbar a:hover {
+ color: #00ffc3;
+}
+
+.navbar a.contact-btn {
+ color: #000 !important;
+ background-color: #f8f8f8;
+ padding: 8px 16px;
+ border-radius: 20px;
+ font-weight: 600;
+ transition: background 0.3s, color 0.3s;
+}
+
+/* Hover effect for contact button */
+.navbar a.contact-btn:hover {
+ background-color: #178fff;
+ color: #fff !important;
+}
+
+/* Make responsive on small screens */
+@media (max-width: 768px) {
+ .navbar {
+ flex-direction: column;
+ align-items: flex-start;
+ padding: 20px;
+ }
+
+ .navbar div {
+ margin-top: 10px;
+ display: flex;
+ flex-direction: column;
+ }
+
+ .navbar a {
+ margin: 10px 0;
+ }
+
+ section {
+ padding: 80px 20px;
+ }
+
+ section h2 {
+ font-size: 2rem;
+ }
+
+ section p {
+ font-size: 1rem;
+ }
+}
+
+.tilt-on-hover {
+ transition: transform 0.4s ease;
+ will-change: transform;
+}
+
+.tilt-on-hover:hover {
+ transform: perspective(600px) rotateY(8deg) rotateX(4deg) scale(1.05);
 }
