@@ -1228,60 +1228,407 @@ function Navbar() {
 
 
 function Home() {
- return (
- <section id="home" className="home-section">
- <img src="/images/logo2.png" alt="Zelion" className="home-logo tilt-on-hover" />
- </section>
- );
+  return (
+    <section
+      id="home"
+      className="home-section"
+      style={{
+        minHeight: '100vh',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'transparent',
+        textAlign: 'center',
+        padding: '0 16px',
+      }}
+    >
+      
+      <h1
+        style={{
+          fontSize: '3.2rem',
+          fontWeight: 800,
+          marginBottom: '18px',
+          color: '#fff',
+          letterSpacing: '1px',
+          lineHeight: 1.1,
+          zIndex: 900,
+        }}
+      >
+        Welcome to Zelion Cricket
+      </h1>
+      <p
+        style={{
+          fontSize: '1.6rem',
+          color: '#e0e0e0',
+          maxWidth: '600px',
+          margin: '0 auto',
+          fontWeight: 500,
+          zIndex: 900
+        }}
+      >
+        Your premier destination for high-quality cricket balls.
+      </p>
+    </section>
+  );
 }
 
 function About() {
- return (
- <section id="about">
- <h2>About Zelion Cricket</h2>
- <p>We craft premium cricket balls with unmatched quality and performance.</p>
- </section>
- );
+  return (
+    <section id="about" style={{
+      padding: '48px 0',
+      background: 'rgba(255,255,255,0.08)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}>
+      <h2 style={{ marginBottom: '24px', zIndex: 900 }}>About Zelion Cricket</h2>
+      <div style={{
+        background: 'rgba(255,255,255,0.18)',
+        borderRadius: '24px',
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        padding: '36px 32px',
+        display: 'flex',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'center',
+        maxWidth: '900px',
+        width: '100%',
+        gap: '40px',
+        zIndex: 900
+      }}>
+        <div style={{
+          flex: 1,
+          fontSize: '1.1rem',
+          color: '#fff',
+          lineHeight: 1.7,
+          textAlign: 'left'
+        }}>
+          <p>
+            Zelion Cricket is dedicated to crafting the finest cricket balls for players at every level. Our journey began with a passion for the sport and a commitment to quality, innovation, and performance. Every Zelion ball is made from premium materials, hand-stitched by skilled artisans, and rigorously tested to meet the demands of both professional and amateur cricketers.
+          </p>
+          <p>
+            We believe in supporting the cricketing community by providing products that enhance the game, whether it's for a test match, a day-night encounter, or a memorable keepsake. Our range includes traditional red balls, high-visibility white balls, and exclusive golden showpiece balls. At Zelion, we blend tradition with technology to deliver unmatched durability, swing, and consistency.
+          </p>
+          <p>
+            Join thousands of players who trust Zelion for their cricketing needs. Experience the difference that passion and precision can make—experience Zelion Cricket.
+          </p>
+        </div>
+        <div style={{
+          flex: '0 0 220px',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center'
+        }}>
+          <img
+            src="/images/logo2.png"
+            alt="Zelion"
+            style={{
+              width: '260px',
+              maxWidth: '200%',
+              
+            }}
+            className="home-logo tilt-on-hover"
+          />
+        </div>
+      </div>
+    </section>
+  );
 }
 
 function Products() {
- return (
- <section id="products">
- <h2>Our Cricket Products</h2>
- <p>Explore our top-notch cricket balls loved by professionals.</p>
- </section>
- );
+  return (
+    <section id="products" style={{
+      padding: '48px 0',
+      background: 'rgba(255,255,255,0.07)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}>
+      <h2 style={{ marginBottom: '24px', zIndex: 900 }}>Our Cricket Products</h2>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '24px',
+        justifyContent: 'center',
+        maxWidth: '900px',
+        zIndex: 900
+      }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <img src="/images/redball.png" alt="Zelion Red Ball" style={{ width: '170px', marginBottom: '12px' }} />
+          <h3>Zelion Red Ball</h3>
+          <p>Hand-stitched, premium leather, ideal for test matches and long innings.</p>
+          <button
+            style={{
+              marginTop: '16px',
+              padding: '10px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'rgba(0, 123, 255, 0.85)',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <img src="/images/whiteball.png" alt="Zelion White Ball" style={{ width: '90px', marginBottom: '12px' }} />
+          <h3>Zelion White Ball</h3>
+          <p>Perfect for limited overs, great swing and visibility under lights.</p>
+          <button
+            style={{
+              marginTop: '16px',
+              padding: '10px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'rgba(0, 123, 255, 0.85)',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)',
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center'
+        }}>
+          <img src="/images/goldenball.png" alt="Zelion Golden Ball" style={{ width: '100px', marginBottom: '12px' }} />
+          <h3>Zelion Golden Ball</h3>
+          <p>Specially for keeping in house as a show piece, 24 carat gold is used.</p>
+          <button
+            style={{
+              marginTop: '16px',
+              padding: '10px 24px',
+              borderRadius: '8px',
+              border: 'none',
+              background: 'rgba(0, 123, 255, 0.85)',
+              color: '#fff',
+              fontWeight: 'bold',
+              fontSize: '1rem',
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+            }}
+          >
+            Buy Now
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+function GallerySection() {
+  return (
+    <section id="gallery" className='gallery-section'>
+      <img src="/images/test.png" alt="zelion" className='image' />
+      <a href="http://zelioncricket.com" target='_blank' rel='noopener noreferrer'><button className='gallery-button'>visit More</button></a>
+    </section>
+  );
 }
 
 function Testimonials() {
- return (
- <section id="testimonials">
- <h2>What Players Say</h2>
- <p>"Zelion balls changed the game for me!" - Pro Cricketer</p>
- </section>
- );
+  return (
+    <section id="testimonials" style={{
+      padding: '48px 0',
+      background: 'rgba(255,255,255,0.10)',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center'
+    }}>
+      <h2 style={{ marginBottom: '24px' }}>What Players Say</h2>
+      <div style={{
+        display: 'flex',
+        flexWrap: 'wrap',
+        gap: '24px',
+        justifyContent: 'center',
+        maxWidth: '900px'
+      }}>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}>
+          <p style={{ fontStyle: 'italic' }}>"Zelion balls changed the game for me!"</p>
+          <div style={{ marginTop: '12px', fontWeight: 'bold' }}>- Pro Cricketer</div>
+        </div>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}>
+          <p style={{ fontStyle: 'italic' }}>"Exceptional quality and swing. Highly recommended!"</p>
+          <div style={{ marginTop: '12px', fontWeight: 'bold' }}>- A. Sharma</div>
+        </div>
+        <div style={{
+          background: 'rgba(255,255,255,0.25)',
+          borderRadius: '16px',
+          padding: '24px',
+          minWidth: '260px',
+          maxWidth: '320px',
+          boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
+        }}>
+          <p style={{ fontStyle: 'italic' }}>"The durability is unmatched. Will buy again."</p>
+          <div style={{ marginTop: '12px', fontWeight: 'bold' }}>- S. Patel</div>
+        </div>
+      </div>
+    </section>
+  );
 }
+
 
 function Contact() {
- return (
- <section id="contact">
- <h2>Contact Us</h2>
- <p>Email us at: contact@zelioncricket.com</p>
- </section>
- );
+  return (
+    <section
+      id="contact"
+      style={{
+        minHeight: '100vh',
+        width: '100vw',
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'center',
+        background: 'rgba(255,255,255,0.05)',
+        backdropFilter: 'blur(10px)',
+        WebkitBackdropFilter: 'blur(10px)',
+        borderRadius: 0,
+        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
+        padding: 0,
+        margin: 0,
+      }}
+    >
+      <form
+        style={{
+          width: '100%',
+          maxWidth: '420px',
+          background: 'rgba(255,255,255,0.15)',
+          borderRadius: '24px',
+          boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
+          padding: '32px 24px',
+          display: 'flex',
+          flexDirection: 'column',
+          gap: '18px',
+        }}
+        onSubmit={e => { e.preventDefault(); alert('Thank you for contacting us!'); }}
+      >
+        <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Contact Us</h2>
+        <input
+          type="text"
+          name="fullname"
+          placeholder="Full Name"
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '12px',
+            border: '1px solid rgba(255,255,255,0.3)',
+            background: 'rgba(255,255,255,0.15)',
+            color: '#222',
+            fontSize: '1rem'
+          }}
+        />
+        <input
+          type="email"
+          name="email"
+          placeholder="Email Address"
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '12px',
+            border: '1px solid rgba(255,255,255,0.3)',
+            background: 'rgba(255,255,255,0.15)',
+            color: '#222',
+            fontSize: '1rem'
+          }}
+        />
+        <textarea
+          name="message"
+          placeholder="Your Message"
+          required
+          rows={5}
+          style={{
+            padding: '12px',
+            borderRadius: '12px',
+            border: '1px solid rgba(255,255,255,0.3)',
+            background: 'rgba(255,255,255,0.15)',
+            color: '#222',
+            fontSize: '1rem',
+            resize: 'vertical'
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: '12px',
+            borderRadius: '12px',
+            border: 'none',
+            background: 'rgba(0, 123, 255, 0.7)',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            cursor: 'pointer',
+            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+          }}
+        >
+          Send Message
+        </button>
+      </form>
+    </section>
+  );
 }
 
+
 function App() {
- return (
- <div>
-   <Navbar />
-   <Home />
-   <About />
-   <Products />
-   <Testimonials />
- <Contact />
- <SplashCursor />
- </div>
- );
+  return (
+    <div>
+      <Navbar />
+      <Home />
+      <SplashCursor />
+      <About />
+      <Products />
+      <GallerySection />
+      <Testimonials />
+      <Contact />
+    </div>
+  );
 }
 export default App;
