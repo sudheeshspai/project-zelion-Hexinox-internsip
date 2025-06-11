@@ -1188,7 +1188,7 @@ function SplashCursor({
         position: 'fixed',
         top: 0,
         left: 0,
-        zIndex: 50,
+        zIndex: 0, // set to 0 so it's the backest layer
         pointerEvents: 'none',
         width: '100%',
         height: '100%',
@@ -1537,85 +1537,287 @@ function Contact() {
         margin: 0,
       }}
     >
-      <form
+      <div
         style={{
           width: '100%',
-          maxWidth: '420px',
-          background: 'rgba(255,255,255,0.15)',
-          borderRadius: '24px',
-          boxShadow: '0 2px 16px rgba(0,0,0,0.08)',
-          padding: '32px 24px',
+          maxWidth: '900px',
           display: 'flex',
           flexDirection: 'column',
-          gap: '18px',
+          alignItems: 'center',
+          padding: '32px 0',
         }}
-        onSubmit={e => { e.preventDefault(); alert('Thank you for contacting us!'); }}
       >
-        <h2 style={{ textAlign: 'center', marginBottom: '8px' }}>Contact Us</h2>
-        <input
-          type="text"
-          name="fullname"
-          placeholder="Full Name"
-          required
+        <h2
           style={{
-            padding: '12px',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.3)',
-            background: 'rgba(255,255,255,0.15)',
-            color: '#222',
-            fontSize: '1rem'
-          }}
-        />
-        <input
-          type="email"
-          name="email"
-          placeholder="Email Address"
-          required
-          style={{
-            padding: '12px',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.3)',
-            background: 'rgba(255,255,255,0.15)',
-            color: '#222',
-            fontSize: '1rem'
-          }}
-        />
-        <textarea
-          name="message"
-          placeholder="Your Message"
-          required
-          rows={5}
-          style={{
-            padding: '12px',
-            borderRadius: '12px',
-            border: '1px solid rgba(255,255,255,0.3)',
-            background: 'rgba(255,255,255,0.15)',
-            color: '#222',
-            fontSize: '1rem',
-            resize: 'vertical'
-          }}
-        />
-        <button
-          type="submit"
-          style={{
-            padding: '12px',
-            borderRadius: '12px',
-            border: 'none',
-            background: 'rgba(0, 123, 255, 0.7)',
-            color: '#fff',
-            fontWeight: 'bold',
-            fontSize: '1rem',
-            cursor: 'pointer',
-            boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+            fontSize: '2.6rem',
+            fontWeight: 800,
+            color: '#007bff',
+            marginBottom: '36px',
+            letterSpacing: '1px',
+            textAlign: 'center'
           }}
         >
-          Send Message
-        </button>
-      </form>
+          Contact Us
+        </h2>
+        <div
+          style={{
+            width: '100%',
+            display: 'grid',
+            gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
+            gap: '32px',
+          }}
+        >
+          {/* WhatsApp Live Chat */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              borderRadius: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '28px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '170px'
+            }}
+          >
+            <h3 style={{ marginBottom: '12px', color: '#007bff', fontSize: '1.25rem', fontWeight: 700 }}>Live Chat</h3>
+            <a
+              href="https://wa.me/919876543210"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                background: '#25D366',
+                color: '#fff',
+                padding: '10px 20px',
+                borderRadius: '10px',
+                fontWeight: 'bold',
+                fontSize: '1.08rem',
+                textDecoration: 'none',
+                boxShadow: '0 2px 8px rgba(0,0,0,0.10)',
+                gap: '10px'
+              }}
+            >
+              Chat on WhatsApp
+            </a>
+          </div>
+          {/* Location */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              borderRadius: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '28px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '170px'
+            }}
+          >
+            <h3 style={{ marginBottom: '12px', color: '#007bff', fontSize: '1.25rem', fontWeight: 700 }}>Location</h3>
+            <a
+              href="https://maps.google.com/?q=Zelion+Cricket+Factory"
+              target="_blank"
+              rel="noopener noreferrer"
+              style={{
+                color: '#fff',
+                textDecoration: 'none',
+                fontWeight: 'bold',
+                fontSize: '1.08rem',
+                textAlign: 'center'
+              }}
+            >
+              Zelion Cricket Factory<br />
+              123 Main Road, Bengaluru, India
+            </a>
+          </div>
+          {/* Call Us */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              borderRadius: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '28px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '170px'
+            }}
+          >
+            <h3 style={{ marginBottom: '12px', color: '#007bff', fontSize: '1.25rem', fontWeight: 700 }}>Call Us</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: 8 }}>
+              <span
+                style={{
+                  fontSize: '1.15rem',
+                  fontWeight: 'bold',
+                  color: '#fff',
+                  userSelect: 'all',
+                  cursor: 'pointer'
+                }}
+                onClick={() => {
+                  navigator.clipboard.writeText('+91 98765 43210');
+                }}
+                title="Click to copy"
+              >
+                +91 98765 43210
+              </span>
+              <button
+                onClick={() => navigator.clipboard.writeText('+91 98765 43210')}
+                style={{
+                  marginLeft: 4,
+                  background: 'transparent',
+                  border: 'none',
+                  cursor: 'pointer',
+                  color: '#fff',
+                  fontSize: '1.2rem'
+                }}
+                title="Copy number"
+              >
+                
+              </button>
+            </div>
+          </div>
+          {/* Email */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              borderRadius: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '28px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              justifyContent: 'center',
+              minHeight: '170px'
+            }}
+          >
+            <h3 style={{ marginBottom: '12px', color: '#007bff', fontSize: '1.25rem', fontWeight: 700 }}>Email</h3>
+            <a
+              href="mailto:info@zelioncricket.com"
+              style={{
+                color: '#fff',
+                fontWeight: 'bold',
+                fontSize: '1.08rem',
+                textDecoration: 'none'
+              }}
+            >
+              info@zelioncricket.com
+            </a>
+          </div>
+          {/* Leave a Message (existing form) */}
+          <div
+            style={{
+              background: 'rgba(255,255,255,0.18)',
+              borderRadius: '18px',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+              padding: '28px 20px',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              minHeight: '180px',
+              gridColumn: '1 / -1'
+            }}
+          >
+            <h3 style={{ textAlign: 'center', marginBottom: '8px', color: '#007bff', fontWeight: 700, fontSize: '1.25rem' }}>Leave a Message</h3>
+            <form
+              style={{
+                width: '100%',
+                maxWidth: '420px',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '18px',
+              }}
+              onSubmit={e => { e.preventDefault(); alert('Thank you for contacting us!'); }}
+            >
+              <input
+                type="text"
+                name="fullname"
+                placeholder="Full Name"
+                required
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.15)',
+                  color: '#222',
+                  fontSize: '1rem'
+                }}
+              />
+              <input
+                type="email"
+                name="email"
+                placeholder="Email Address"
+                required
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.15)',
+                  color: '#222',
+                  fontSize: '1rem'
+                }}
+              />
+              <textarea
+                name="message"
+                placeholder="Your Message"
+                required
+                rows={5}
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  border: '1px solid rgba(255,255,255,0.3)',
+                  background: 'rgba(255,255,255,0.15)',
+                  color: '#222',
+                  fontSize: '1rem',
+                  resize: 'vertical'
+                }}
+              />
+              <button
+                type="submit"
+                style={{
+                  padding: '12px',
+                  borderRadius: '12px',
+                  border: 'none',
+                  background: 'rgba(0, 123, 255, 0.7)',
+                  color: '#fff',
+                  fontWeight: 'bold',
+                  fontSize: '1rem',
+                  cursor: 'pointer',
+                  boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+                }}
+              >
+                Send Message
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
     </section>
   );
 }
 
+function Footer() {
+  return (
+    <footer
+      style={{
+        width: '100%',
+        textAlign: 'center',
+        padding: '18px 0 10px 0',
+        color: '#fff',
+        fontSize: '1rem',
+        background: 'rgba(0,0,0,0.18)',
+        letterSpacing: '0.5px',
+        marginTop: '32px'
+      }}
+    >
+      &copy; {new Date().getFullYear()} Sudheesh S Pai &mdash; Done as part of internship at Hexinox
+    </footer>
+  );
+}
 
 function App() {
   return (
@@ -1628,6 +1830,7 @@ function App() {
       <GallerySection />
       <Testimonials />
       <Contact />
+      <Footer />
     </div>
   );
 }
