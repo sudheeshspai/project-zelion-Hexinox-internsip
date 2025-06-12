@@ -75,10 +75,75 @@ section h2 {
  margin-bottom: 20px;
 }
 
+/* Add top margin for every h2 on tablet and phone */
+@media (max-width: 900px) {
+  h2 {
+    margin-top: 18px !important;
+  }
+}
+@media (max-width: 600px) {
+  h2 {
+    margin-top: 12px !important;
+  }
+}
+
 section p {
  font-size: 1.2rem;
  max-width: 600px;
  opacity: 0.8;
+}
+
+/* Responsive font sizes for h1, h2, h3 on tablet and phone */
+h1 {
+  font-size: 2.2rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+h2 {
+  font-size: 1.7rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+h3 {
+  font-size: 1.15rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  h1 {
+    font-size: 1.5rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+  h2 {
+    font-size: 1.1rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+  h3 {
+    font-size: 0.98rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.02rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
+  h2 {
+    font-size: 0.98rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
+  h3 {
+    font-size: 0.92rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
 }
 
 /* Navbar Glassmorphism */
@@ -173,7 +238,7 @@ section p {
   .navbar {
     flex-direction: row !important;
     align-items: center !important;
-    padding: 10px 12px !important;
+    padding: 10px 12px  !important;
     width: 98vw !important;
     left: 1vw !important;
     transform: none !important;
@@ -183,7 +248,7 @@ section p {
   }
   .navbar img {
     height: 32px !important;
-    margin-right: 8px;
+    margin-right: 12px !important;
   }
   .navbar .menu-toggle {
     display: block;
@@ -274,6 +339,36 @@ section {
   }
 }
 
+/* Center and align About section <p> on tablet and mobile, add side margins */
+@media (max-width: 900px) {
+  #about > div > div p {
+    text-align: center !important;
+    margin-left: 18px !important;
+    margin-right: 18px !important;
+  }
+}
+@media (max-width: 600px) {
+  #about > div > div p {
+    text-align: center !important;
+    margin-left: 8px !important;
+    margin-right: 8px !important;
+    font-size: 1rem !important;
+    line-height: 1.5 !important;
+  }
+}
+
+/* Add top margin for About section on tablet and phone */
+@media (max-width: 900px) {
+  #about {
+    margin-top: 18px !important;
+  }
+}
+@media (max-width: 600px) {
+  #about {
+    margin-top: 12px !important;
+  }
+}
+
 /* Responsive for testimonials */
 @media (max-width: 900px) {
   #testimonials > div {
@@ -309,6 +404,7 @@ section {
   }
 }
 
+
 /* Responsive for navbar */
 @media (max-width: 600px) {
   .navbar {
@@ -322,12 +418,12 @@ section {
     border-radius: 10px !important;
   }
   .navbar img {
-    height: 32px !important;
+    height: px !important;
   }
   .navbar div {
     margin-top: 8px !important;
     flex-direction: column !important;
-    width: 100% !important;
+    width: 60% !important;
   }
   .navbar a {
     margin: 6px 0 !important;
@@ -434,6 +530,7 @@ body, html {
 .parallax {
   position: relative;
   overflow: hidden;
+  margin-bottom: 32px;
 }
 
 .scroller {
@@ -456,6 +553,7 @@ body, html {
     font-size: 5rem;
     line-height: 5rem;
   }
+  
 }
 
 /* Footer always at bottom, never overlaps */
@@ -474,3 +572,149 @@ footer {
   z-index: 2;
   position: relative;
 }
+
+.decrypted-offer-title {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 1.5px;
+  margin: 0 auto;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+
+.decrypted-offer-highlight {
+  margin-top: 4rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 180px;
+}
+
+.decrypted-offer-highlight-text {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: 'Bebas Neue', 'Oswald', 'Montserrat', Arial, sans-serif;
+  font-size: 3.2rem;
+  font-weight: 900;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 2.5px;
+  margin: 0 auto;
+  line-height: 1.1;
+  text-shadow: 0 2px 12px #007bff, 0 1px 0 #ffd700;
+  transition: font-size 0.3s;
+  max-width: 900px;
+}
+
+.decrypted-offer-limited {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #fff;
+  text-align: center;
+  width: 100%;
+  letter-spacing: 1.5px;
+  margin: 0 auto;
+  font-family: 'Montserrat', 'Segoe UI', Arial, sans-serif;
+}
+
+/* Responsive styles for decrypted-offer-highlight-text */
+@media (max-width: 900px) {
+  .decrypted-offer-highlight-text {
+    font-size: 2.1rem;
+    max-width: 98vw;
+  }
+}
+@media (max-width: 600px) {
+  .decrypted-offer-title,
+  .decrypted-offer-limited {
+    font-size: 1.3rem;
+  }
+  .decrypted-offer-highlight-text {
+    font-size: 1.3rem;
+  }
+}
+
+/* Add spacing between ScrollVelocity and About section for all layouts */
+.parallax {
+  margin-bottom: 32px;
+}
+
+/* Reduce the space on mobile for a tighter layout */
+@media (max-width: 900px) {
+  .parallax {
+    margin-bottom: 18px;
+  }
+}
+@media (max-width: 600px) {
+  .parallax {
+    margin-bottom: 10px;
+  }
+}
+
+/* --- Responsive text sizes and margins for all layouts --- */
+
+/* h1, h2, h3: Responsive font sizes */
+h1 {
+  font-size: 2.2rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+h2 {
+  font-size: 1.7rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+h3 {
+  font-size: 1.15rem;
+  margin-left: 0.5rem;
+  margin-right: 0.5rem;
+}
+
+@media (max-width: 900px) {
+  h1 {
+    font-size: 1.5rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+  h2 {
+    font-size: 1.1rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+  h3 {
+    font-size: 0.98rem !important;
+    margin-left: 0.3rem !important;
+    margin-right: 0.3rem !important;
+  }
+}
+
+@media (max-width: 600px) {
+  h1 {
+    font-size: 1.02rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
+  h2 {
+    font-size: 0.98rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
+  h3 {
+    font-size: 0.92rem !important;
+    margin-left: 0.15rem !important;
+    margin-right: 0.15rem !important;
+  }
+}
+

@@ -1238,7 +1238,7 @@ function useElementWidth(ref) {
 export const ScrollVelocity = ({
   scrollContainerRef,
   texts = [],
-  velocity = 100,
+  velocity = 80,
   className = "",
   damping = 50,
   stiffness = 400,
@@ -1351,6 +1351,228 @@ export const ScrollVelocity = ({
   );
 };
 
+const styles = {
+  wrapper: {
+    display: 'inline-block',
+    whiteSpace: 'pre-wrap',
+  },
+  srOnly: {
+    position: 'absolute',
+    width: '1px',
+    height: '1px',
+    padding: 0,
+    margin: '-1px',
+    overflow: 'hidden',
+    clip: 'rect(0,0,0,0)',
+    border: 0,
+  },
+}
+
+export function DecryptedText({
+  text,
+  speed = 120,
+  maxIterations = 30,
+  sequential = false,
+  revealDirection = 'start',
+  useOriginalCharsOnly = false,
+  characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()_+',
+  className = '',
+  parentClassName = '',
+  encryptedClassName = '',
+  animateOn = 'hover',
+  ...props
+}) {
+  const [displayText, setDisplayText] = useState(text);
+  const [isHovering, setIsHovering] = useState(false);
+  const [isScrambling, setIsScrambling] = useState(false);
+  const [revealedIndices, setRevealedIndices] = useState(new Set());
+  const [hasAnimated, setHasAnimated] = useState(false);
+  const containerRef = useRef(null);
+
+  useEffect(() => {
+    let interval
+    let currentIteration = 0
+
+    const getNextIndex = (revealedSet) => {
+      const textLength = text.length
+      switch (revealDirection) {
+        case 'start':
+          return revealedSet.size
+        case 'end':
+          return textLength - 1 - revealedSet.size
+        case 'center': {
+          const middle = Math.floor(textLength / 2)
+          const offset = Math.floor(revealedSet.size / 2)
+          const nextIndex =
+            revealedSet.size % 2 === 0
+              ? middle + offset
+              : middle - offset - 1
+
+          if (nextIndex >= 0 && nextIndex < textLength && !revealedSet.has(nextIndex)) {
+            return nextIndex
+          }
+
+          for (let i = 0; i < textLength; i++) {
+            if (!revealedSet.has(i)) return i
+          }
+          return 0
+        }
+        default:
+          return revealedSet.size
+      }
+    }
+
+    const availableChars = useOriginalCharsOnly
+      ? Array.from(new Set(text.split(''))).filter((char) => char !== ' ')
+      : characters.split('')
+
+    const shuffleText = (originalText, currentRevealed) => {
+      if (useOriginalCharsOnly) {
+        const positions = originalText.split('').map((char, i) => ({
+          char,
+          isSpace: char === ' ',
+          index: i,
+          isRevealed: currentRevealed.has(i),
+        }))
+
+        const nonSpaceChars = positions
+          .filter((p) => !p.isSpace && !p.isRevealed)
+          .map((p) => p.char)
+
+        for (let i = nonSpaceChars.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1))
+            ;[nonSpaceChars[i], nonSpaceChars[j]] = [nonSpaceChars[j], nonSpaceChars[i]]
+        }
+
+        let charIndex = 0
+        return positions
+          .map((p) => {
+            if (p.isSpace) return ' '
+            if (p.isRevealed) return originalText[p.index]
+            return nonSpaceChars[charIndex++]
+          })
+          .join('')
+      } else {
+        return originalText
+          .split('')
+          .map((char, i) => {
+            if (char === ' ') return ' '
+            if (currentRevealed.has(i)) return originalText[i]
+            return availableChars[Math.floor(Math.random() * availableChars.length)]
+          })
+          .join('')
+      }
+    }
+
+    if (isHovering) {
+      setIsScrambling(true)
+      interval = setInterval(() => {
+        setRevealedIndices((prevRevealed) => {
+          if (sequential) {
+            if (prevRevealed.size < text.length) {
+              const nextIndex = getNextIndex(prevRevealed)
+              const newRevealed = new Set(prevRevealed)
+              newRevealed.add(nextIndex)
+              setDisplayText(shuffleText(text, newRevealed))
+              return newRevealed
+            } else {
+              clearInterval(interval)
+              setIsScrambling(false)
+              return prevRevealed
+            }
+          } else {
+            setDisplayText(shuffleText(text, prevRevealed))
+            currentIteration++
+            if (currentIteration >= maxIterations) {
+              clearInterval(interval)
+              setIsScrambling(false)
+              setDisplayText(text)
+            }
+            return prevRevealed
+          }
+        })
+      }, speed)
+    } else {
+      setDisplayText(text)
+      setRevealedIndices(new Set())
+      setIsScrambling(false)
+    }
+
+    return () => {
+      if (interval) clearInterval(interval)
+    }
+  }, [
+    isHovering,
+    text,
+    speed,
+    maxIterations,
+    sequential,
+    revealDirection,
+    characters,
+    useOriginalCharsOnly,
+  ])
+
+  useEffect(() => {
+    if (animateOn !== 'view') return
+
+    const observerCallback = (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !hasAnimated) {
+          setIsHovering(true)
+          setHasAnimated(true)
+        }
+      })
+    }
+
+    const observerOptions = {
+      root: null,
+      rootMargin: '0px',
+      threshold: 0.1,
+    }
+
+    const observer = new IntersectionObserver(observerCallback, observerOptions)
+    const currentRef = containerRef.current
+    if (currentRef) {
+      observer.observe(currentRef)
+    }
+
+    return () => {
+      if (currentRef) {
+        observer.unobserve(currentRef)
+      }
+    }
+  }, [animateOn, hasAnimated])
+
+  const hoverProps =
+    animateOn === 'hover'
+      ? {
+        onMouseEnter: () => setIsHovering(true),
+        onMouseLeave: () => setIsHovering(false),
+      }
+      : {}
+
+  return (
+    <motion.span className={parentClassName} ref={containerRef} style={styles.wrapper} {...hoverProps} {...props}>
+      <span style={styles.srOnly}>{displayText}</span>
+
+      <span aria-hidden="true">
+        {displayText.split('').map((char, index) => {
+          const isRevealedOrDone =
+            revealedIndices.has(index) || !isScrambling || !isHovering
+
+          return (
+            <span
+              key={index}
+              className={isRevealedOrDone ? className : encryptedClassName}
+            >
+              {char}
+            </span>
+          )
+        })}
+      </span>
+    </motion.span>
+  )
+}
 
 
 
@@ -1531,9 +1753,10 @@ function About() {
       padding: '18px 0', // reduced padding
       display: 'flex',
       flexDirection: 'column',
-      alignItems: 'center'
+      alignItems: 'center',
+      marginTop: '12px',
     }}>
-      <h2 style={{ marginBottom: '12px', zIndex: 900 }}>About Zelion Cricket</h2>
+      <h2 style={{ marginBottom: '12px',marginTop: '12px', zIndex: 900 }}>About Zelion Cricket</h2>
       <div style={{
         borderRadius: '16px',
         boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.12)',
@@ -1554,7 +1777,8 @@ function About() {
           fontSize: '1.1rem',
           color: '#fff',
           lineHeight: 1.7,
-          textAlign: 'left'
+          textAlign: 'left',
+          
         }}>
           <p>
             Zelion Cricket is dedicated to crafting the finest cricket balls for players at every level. Our journey began with a passion for the sport and a commitment to quality, innovation, and performance. Every Zelion ball is made from premium materials, hand-stitched by skilled artisans, and rigorously tested to meet the demands of both professional and amateur cricketers.
@@ -1630,7 +1854,7 @@ function Products() {
               fontWeight: 'bold',
               fontSize: '1rem',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
             }}
           >
             Buy Now
@@ -1661,7 +1885,7 @@ function Products() {
               fontWeight: 'bold',
               fontSize: '1rem',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
             }}
           >
             Buy Now
@@ -1692,7 +1916,7 @@ function Products() {
               fontWeight: 'bold',
               fontSize: '1rem',
               cursor: 'pointer',
-              boxShadow: '0 2px 8px rgba(0,0,0,0.08)'
+              boxShadow: '0 2px 8px rgba(0,0,0,0.06)'
             }}
           >
             Buy Now
@@ -1895,7 +2119,7 @@ function Contact() {
               Zelion Cricket Factory<br />
               123 Main Road, Bengaluru, India
             </a>
-          </div>
+                                                                             </div>
           {/* Call Us */}
           <div
             style={{
@@ -2168,13 +2392,37 @@ function App() {
       <div style={{ height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <ScrollVelocity
           texts={['About','Zelion']}
-          velocity={350}
+          velocity={280}
           className="custom-scroll-text"
         />
       </div>
       <About />
       <Products />
       <GallerySection />
+     <div style={{ marginTop: '4rem' }}>
+<DecryptedText
+  text=" There is an offer for you!"
+  animateOn="view"
+  revealDirection="center"
+  parentClassName="decrypted-offer-title"
+/>
+</div>
+     <div className="decrypted-offer-highlight">
+       <DecryptedText
+         text="Check below for exclusive deals on Zelion Cricket balls. Unleash your champion within! "
+         animateOn="view"
+         revealDirection="center"
+         parentClassName="decrypted-offer-highlight-text"
+       />
+     </div>
+      <div>
+<DecryptedText
+  text="  only for limited time! Take advantage of this offer now!"
+  animateOn="view"
+  revealDirection="center"
+  parentClassName="decrypted-offer-limited"
+/>
+</div>
       <Offers/>
       <Testimonials />
       <Contact />
