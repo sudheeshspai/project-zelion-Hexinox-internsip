@@ -1,7 +1,16 @@
-import React from 'react';
+import React, { useRef, useEffect, useLayoutEffect, useState } from "react";
 import './App.css';
-
-import { useEffect, useRef } from 'react';
+import {
+  motion,
+  useScroll,
+  useSpring,
+  useTransform,
+  useMotionValue,
+  useVelocity,
+  useAnimationFrame,
+} from "framer-motion";
+import { section } from "framer-motion/client";
+import emailjs from '@emailjs/browser';
 
 function SplashCursor({
   SIM_RESOLUTION = 128,
@@ -1207,68 +1216,311 @@ function SplashCursor({
   );
 }
 
+ 
+
+function useElementWidth(ref) {
+  const [width, setWidth] = useState(0);
+
+  useLayoutEffect(() => {
+    function updateWidth() {
+      if (ref.current) {
+        setWidth(ref.current.offsetWidth);
+      }
+    }
+    updateWidth();
+    window.addEventListener("resize", updateWidth);
+    return () => window.removeEventListener("resize", updateWidth);
+  }, [ref]);
+
+  return width;
+}
+
+export const ScrollVelocity = ({
+  scrollContainerRef,
+  texts = [],
+  velocity = 100,
+  className = "",
+  damping = 50,
+  stiffness = 400,
+  numCopies = 10,
+  velocityMapping = { input: [0, 1000], output: [0, 10] },
+  parallaxClassName = "parallax",
+  scrollerClassName = "scroller",
+  parallaxStyle,
+  scrollerStyle,
+}) => {
+  function VelocityText({
+    children,
+    baseVelocity = velocity,
+    scrollContainerRef,
+    className = "",
+    damping,
+    stiffness,
+    numCopies,
+    velocityMapping,
+    parallaxClassName,
+    scrollerClassName,
+    parallaxStyle,
+    scrollerStyle,
+  }) {
+    const baseX = useMotionValue(0);
+    const scrollOptions = scrollContainerRef ? { container: scrollContainerRef } : {};
+    const { scrollY } = useScroll(scrollOptions);
+    const scrollVelocity = useVelocity(scrollY);
+    const smoothVelocity = useSpring(scrollVelocity, {
+      damping: damping ?? 50,
+      stiffness: stiffness ?? 400,
+    });
+    const velocityFactor = useTransform(
+      smoothVelocity,
+      velocityMapping?.input || [0, 1000],
+      velocityMapping?.output || [0, 5],
+      { clamp: false }
+    );
+
+    const copyRef = useRef(null);
+    const copyWidth = useElementWidth(copyRef);
+
+    function wrap(min, max, v) {
+      const range = max - min;
+      const mod = (((v - min) % range) + range) % range;
+      return mod + min;
+    }
+
+    const x = useTransform(baseX, (v) => {
+      if (copyWidth === 0) return "0px";
+      return `${wrap(-copyWidth, 0, v)}px`;
+    });
+
+    const directionFactor = useRef(1);
+    useAnimationFrame((t, delta) => {
+      let moveBy = directionFactor.current * baseVelocity * (delta / 1000);
+
+      if (velocityFactor.get() < 0) {
+        directionFactor.current = -1;
+      } else if (velocityFactor.get() > 0) {
+        directionFactor.current = 1;
+      }
+
+      moveBy += directionFactor.current * moveBy * velocityFactor.get();
+      baseX.set(baseX.get() + moveBy);
+    });
+
+    const spans = [];
+    for (let i = 0; i < numCopies; i++) {
+      spans.push(
+        <span className={className} key={i} ref={i === 0 ? copyRef : null}>
+          {children}
+        </span>
+      );
+    }
+
+    return (
+      <div className={parallaxClassName} style={parallaxStyle}>
+        <motion.div
+          className={scrollerClassName}
+          style={{ x, ...scrollerStyle }}
+        >
+          {spans}
+        </motion.div>
+      </div>
+    );
+  }
+
+  return (
+    <section>
+      {texts.map((text, index) => (
+        <VelocityText
+          key={index}
+          className={className}
+          baseVelocity={index % 2 !== 0 ? -velocity : velocity}
+          scrollContainerRef={scrollContainerRef}
+          damping={damping}
+          stiffness={stiffness}
+          numCopies={numCopies}
+          velocityMapping={velocityMapping}
+          parallaxClassName={parallaxClassName}
+          scrollerClassName={scrollerClassName}
+          parallaxStyle={parallaxStyle}
+          scrollerStyle={scrollerStyle}
+        >
+          {text}&nbsp;
+        </VelocityText>
+      ))}
+    </section>
+  );
+};
+
+
 
 
 
 
 function Navbar() {
- return (
- <nav className="navbar">
- <img src="/images/logo1.png" alt="Zelion Logo" />
- <div>
- <a href="#home">Home</a>
- <a href="#about">About</a>
- <a href="#products">Products</a>
- <a href="#testimonials">Testimonials</a>
- <a href="#contact" className="contact-btn">Contact Us</a>
- </div>
- </nav>
- );
+  const [menuOpen, setMenuOpen] = React.useState(false);
+
+  // Close menu on navigation (for SPA smoothness)
+  function handleNavClick() {
+    setMenuOpen(false);
+  }
+
+  // Optional: close menu on resize to desktop
+  React.useEffect(() => {
+    function handleResize() {
+      if (window.innerWidth > 600) setMenuOpen(false);
+    }
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  return (
+    <nav className="navbar">
+      <div style={{ display: 'flex', alignItems: 'center', flex: 1 }}>
+        <img src="/images/logo1.png" alt="Zelion Logo" />
+      </div>
+      <button
+        className="menu-toggle"
+        aria-label="Toggle menu"
+        onClick={() => setMenuOpen((open) => !open)}
+        style={{
+          marginLeft: 'auto',
+          marginRight: menuOpen ? '8px' : '0',
+        }}
+      >
+        {menuOpen ? "✕" : "☰"}
+      </button>
+      <div className={`nav-links${menuOpen ? " open" : ""}`}>
+        <a href="#home" onClick={handleNavClick}>Home</a>
+        <a href="#about" onClick={handleNavClick}>About</a>
+        <a href="#products" onClick={handleNavClick}>Products</a>
+        <a href="#testimonials" onClick={handleNavClick}>Testimonials</a>
+        <a href="#contact" className="contact-btn" onClick={handleNavClick}>Contact Us</a>
+      </div>
+    </nav>
+  );
 }
 
 
 function Home() {
+  // Scroll to products section on button click
+  const handleExploreClick = (e) => {
+    e.preventDefault();
+    // Set hash first so browser jumps if needed
+    window.location.hash = '#products';
+    // Try to scroll smoothly if element exists
+    const el = document.getElementById('products');
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth' });
+    }
+  };
+
+
   return (
     <section
       id="home"
       className="home-section"
       style={{
-        minHeight: '100vh',
+        minHeight: '70vh', // reduced from 100vh
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
         background: 'transparent',
         textAlign: 'center',
-        padding: '0 16px',
+        padding: '0 8px', // reduced padding
+        position: 'relative',
       }}
     >
-      
-      <h1
+      <div
         style={{
-          fontSize: '3.2rem',
-          fontWeight: 800,
-          marginBottom: '18px',
-          color: '#fff',
-          letterSpacing: '1px',
-          lineHeight: 1.1,
-          zIndex: 900,
-        }}
-      >
-        Welcome to Zelion Cricket
-      </h1>
-      <p
-        style={{
-          fontSize: '1.6rem',
-          color: '#e0e0e0',
-          maxWidth: '600px',
+          borderRadius: '24px', // reduced radius
+          padding: '28px 18px 24px 18px', // reduced padding
+          maxWidth: '700px',
           margin: '0 auto',
-          fontWeight: 500,
-          zIndex: 900
+          zIndex: 900,
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
         }}
       >
-        Your premier destination for high-quality cricket balls.
-      </p>
+        <h1
+          style={{
+            fontSize: '3rem', // reduced font size
+            fontWeight: 900,
+            marginBottom: '8px', // reduced margin
+            color: '#fff',
+            letterSpacing: '1px',
+            lineHeight: 1.08,
+            textShadow: '0 2px 12px rgba(0,0,0,0.18), 0 1px 0 #007bff',
+            zIndex: 900,
+          }}
+        >
+          <span style={{ color: '#007bff', fontWeight: 900 }}>Zelion</span> Cricket
+        </h1>
+        <div
+          style={{
+            width: '40px', // reduced width
+            height: '4px', // reduced height
+            background: 'linear-gradient(90deg, #007bff 0%, #fff 100%)',
+            borderRadius: '2px',
+            margin: '0 auto 12px auto', // reduced margin
+          }}
+        />
+        <p
+          style={{
+            fontSize: '1.6rem', // reduced font size
+            color: '#e0e0e0',
+            maxWidth: '520px',
+            margin: '0 auto 10px auto', // reduced margin
+            fontWeight: 500,
+            zIndex: 900,
+            textShadow: '0 1px 4px rgba(0,0,0,0.12)',
+          }}
+        >
+          Your premier destination for <span style={{ color: '#ffd700', fontWeight: 700 }}>high-quality cricket balls</span> crafted for champions.
+        </p>
+        <p
+          style={{
+            fontSize: '0.95rem', // reduced font size
+            color: '#b0c4de',
+            margin: '0 auto 0 auto',
+            maxWidth: '400px',
+            zIndex: 900,
+            letterSpacing: '0.1px',
+          }}
+        >
+          Elevate your game with our hand-stitched, professional-grade cricket balls trusted by players worldwide.
+        </p>
+        <button
+          href="#products"
+          onClick={handleExploreClick}
+          aria-label="Explore Products"
+          type="button"
+          style={{
+            marginTop: '18px', // reduced margin
+            padding: '0px 22px', // reduced padding
+            borderRadius: '8px',
+            background: 'linear-gradient(90deg, #007bff 60%, #00c6ff 100%)',
+            color: '#fff',
+            fontWeight: 700,
+            fontSize: '1rem',
+            textDecoration: 'none',
+            boxShadow: '0 1px 6px rgba(0,123,255,0.18)',
+            letterSpacing: '0.3px',
+            transition: 'background 0.2s, transform 0.2s',
+            display: 'inline-block',
+            position: 'relative',
+            overflow: 'visible',
+            border: 'none',
+            cursor: 'pointer'
+          }}
+          onMouseOver={e => e.currentTarget.style.transform = 'scale(1.04)'}
+          onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
+        >
+          <span style={{ position: 'relative', zIndex: 2 }}>Explore Products</span>
+        
+        </button>
+      </div>
     </section>
   );
 }
@@ -1276,27 +1528,25 @@ function Home() {
 function About() {
   return (
     <section id="about" style={{
-      padding: '48px 0',
-      background: 'rgba(255,255,255,0.08)',
+      padding: '18px 0', // reduced padding
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
     }}>
-      <h2 style={{ marginBottom: '24px', zIndex: 900 }}>About Zelion Cricket</h2>
+      <h2 style={{ marginBottom: '12px', zIndex: 900 }}>About Zelion Cricket</h2>
       <div style={{
-        background: 'rgba(255,255,255,0.18)',
-        borderRadius: '24px',
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.18)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        padding: '36px 32px',
+        borderRadius: '16px',
+        boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.12)',
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        padding: '18px 12px',
         display: 'flex',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'center',
         maxWidth: '900px',
         width: '100%',
-        gap: '40px',
+        gap: '20px',
         zIndex: 900
       }}>
         <div style={{
@@ -1341,17 +1591,16 @@ function About() {
 function Products() {
   return (
     <section id="products" style={{
-      padding: '48px 0',
-      background: 'rgba(255,255,255,0.07)',
+      padding: '18px 0', // reduced padding
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
     }}>
-      <h2 style={{ marginBottom: '24px', zIndex: 900 }}>Our Cricket Products</h2>
+      <h2 style={{ marginBottom: '12px', zIndex: 900 }}>Our Cricket Products</h2>
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '24px',
+        gap: '12px', // reduced gap
         justifyContent: 'center',
         maxWidth: '900px',
         zIndex: 900
@@ -1453,11 +1702,21 @@ function Products() {
     </section>
   );
 }
+
 function GallerySection() {
   return (
-    <section id="gallery" className='gallery-section'>
+    <section
+      id="gallery"
+      className='gallery-section'
+      style={{
+        marginBottom: '0',
+        padding: '8px 0', // add minimal padding
+      }}
+    >
       <img src="/images/test.png" alt="zelion" className='image' />
-      <a href="http://zelioncricket.com" target='_blank' rel='noopener noreferrer'><button className='gallery-button'>visit More</button></a>
+      <a href="http://zelioncricket.com" target='_blank' rel='noopener noreferrer'>
+        <button className='gallery-button'>visit More</button>
+      </a>
     </section>
   );
 }
@@ -1465,17 +1724,16 @@ function GallerySection() {
 function Testimonials() {
   return (
     <section id="testimonials" style={{
-      padding: '48px 0',
-      background: 'rgba(255,255,255,0.10)',
+      padding: '18px 0', // reduced padding
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center'
     }}>
-      <h2 style={{ marginBottom: '24px' }}>What Players Say</h2>
+      <h2 style={{ marginBottom: '12px' }}>What Players Say</h2>
       <div style={{
         display: 'flex',
         flexWrap: 'wrap',
-        gap: '24px',
+        gap: '12px', // reduced gap
         justifyContent: 'center',
         maxWidth: '900px'
       }}>
@@ -1523,18 +1781,20 @@ function Contact() {
     <section
       id="contact"
       style={{
-        minHeight: '100vh',
+        minHeight: '60vh', // reduced minHeight
         width: '100vw',
         display: 'flex',
         alignItems: 'center',
         justifyContent: 'center',
         background: 'rgba(255,255,255,0.05)',
-        backdropFilter: 'blur(10px)',
-        WebkitBackdropFilter: 'blur(10px)',
-        borderRadius: 0,
-        boxShadow: '0 8px 32px 0 rgba(31, 38, 135, 0.37)',
-        padding: 0,
-        margin: 0,
+        backdropFilter: 'blur(6px)',
+        WebkitBackdropFilter: 'blur(6px)',
+        borderRadius: '18px',
+        boxShadow: '0 4px 16px 0 rgba(31, 38, 135, 0.18)',
+        padding: '18px 0', // reduced padding
+        margin: '0',
+        position: 'relative',
+        zIndex: 1
       }}
     >
       <div
@@ -1544,15 +1804,17 @@ function Contact() {
           display: 'flex',
           flexDirection: 'column',
           alignItems: 'center',
-          padding: '32px 0',
+          padding: '12px 0', // reduced padding
+          position: 'relative',
+          zIndex: 2
         }}
       >
         <h2
           style={{
-            fontSize: '2.6rem',
+            fontSize: '1.6rem', // reduced font size
             fontWeight: 800,
             color: '#007bff',
-            marginBottom: '36px',
+            marginBottom: '18px', // reduced margin
             letterSpacing: '1px',
             textAlign: 'center'
           }}
@@ -1564,7 +1826,7 @@ function Contact() {
             width: '100%',
             display: 'grid',
             gridTemplateColumns: 'repeat(2, minmax(0, 1fr))',
-            gap: '32px',
+            gap: '12px', // reduced gap
           }}
         >
           {/* WhatsApp Live Chat */}
@@ -1818,16 +2080,102 @@ function Footer() {
     </footer>
   );
 }
+function Offers() {
+  const [email, setEmail] = React.useState('');
+  const [status, setStatus] = React.useState('');
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setStatus('Submitting...');
+    try {
+      await emailjs.send(
+        'service_9zew0gh',
+        'template_0z44tq4',
+        { user_email: email },
+        'ZZcpzagnttc3M_Bmv'
+      );
+      setStatus('Thank you for subscribing!');
+      setEmail('');
+    } catch (err) {
+     
+      setStatus('Failed to subscribe. Please try again.');
+    }
+  };
+
+  return (
+    <section id="offers" style={{ padding: '10px 0', textAlign: 'center' }}>
+      <h2 style={{ marginBottom: '8px' }}>Our Offers</h2>
+      <p style={{ marginBottom: '8px' }}>Check out our exclusive offers and discounts!</p>
+      <form
+        onSubmit={handleSubmit}
+        style={{
+          marginTop: '0px',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          gap: '8px', // reduced gap
+        }}
+      >
+        <input
+          type="email"
+          name="user_email"
+          placeholder="your@email.com"
+          value={email}
+          onChange={e => setEmail(e.target.value)}
+          required
+          style={{
+            padding: '12px',
+            borderRadius: '8px',
+            border: '1px solid #ccc',
+            fontSize: '1rem',
+            minWidth: '240px',
+          }}
+        />
+        <button
+          type="submit"
+          style={{
+            padding: '12px 24px',
+            borderRadius: '8px',
+            border: 'none',
+            background: '#007bff',
+            color: '#fff',
+            fontWeight: 'bold',
+            fontSize: '1rem',
+            cursor: 'pointer',
+          }}
+        >
+          Subscribe
+        </button>
+      </form>
+      {status && (
+        <div style={{ marginTop: '8px', color: '#fff', fontWeight: 500 }}>
+          {status}
+        </div>
+      )}
+    </section>
+  );
+}
 
 function App() {
   return (
-    <div>
+    <div style={{ background: '#000', minHeight: '100vh', width: '100vw', overflowX: 'hidden', position: 'relative' }}>
       <Navbar />
+      {/* Remove or reduce spacer for navbar */}
+      <div style={{ height: '24px' }} /> {/* Reduced spacer */}
       <Home />
       <SplashCursor />
+      {/* Small space for scroll velocity */}
+      <div style={{ height: '16px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <ScrollVelocity
+          texts={['About','Zelion']}
+          velocity={350}
+          className="custom-scroll-text"
+        />
+      </div>
       <About />
       <Products />
       <GallerySection />
+      <Offers/>
       <Testimonials />
       <Contact />
       <Footer />
